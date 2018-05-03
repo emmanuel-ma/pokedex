@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // Actions
-import { fetchPokemons } from './actions';
+import { fetchPokemons, getPokemon } from './actions';
 
 // Utils
 //import { isFirstRender } from '../shared/utils/data';
@@ -20,6 +20,7 @@ class Pokedex extends Component {
     super(props);
 
     this.handleFetchPokemonsClick = this.handleFetchPokemonsClick.bind(this);
+    this.handleGetPokemonClick = this.handleGetPokemonClick.bind(this);
   }
 
   handleFetchPokemonsClick() {
@@ -29,20 +30,41 @@ class Pokedex extends Component {
     dispatch(fetchPokemons(3));
   }
 
+  handleGetPokemonClick(event, url) {
+    const { dispatch } = this.props;
+
+    dispatch(getPokemon(url));
+  }
+
   render() {
-    const { pokemonType } = this.props;
+    const { pokemonType, pokemon } = this.props;
 
     return (
       <div className="Pokemon">
         <button onClick={this.handleFetchPokemonsClick}>
           Load Pokemons
         </button>
-        <ul> Pokemons:
+
+        {isDefined(pokemon) &&
+          <div>
+            <h1>Selected Pokemon Information</h1>
+            <ul>
+              <li><strong>Name</strong>: {pokemon.name}</li>
+              <li><strong>Weight</strong>: {pokemon.weight}</li>
+              <li><strong>Height</strong>: {pokemon.name}</li>
+            </ul>
+          </div>
+        }
+
+        <ul> Pokemons List:
           {isDefined(pokemonType) && isDefined(pokemonType.pokemon) &&
             pokemonType.pokemon.map((pokemon, index) =>
             <li key={index}>
               <h1>{pokemon.pokemon.name}</h1>
               <span>{pokemon.pokemon.url}</span>
+              <button onClick={(e) => this.handleGetPokemonClick(e, pokemon.pokemon.url)}>
+                See Info
+              </button>
             </li>
           )}
         </ul>
@@ -52,5 +74,6 @@ class Pokedex extends Component {
 }
 
 export default connect(({ pokedex }) => ({
-  pokemonType: pokedex.pokemonType
+  pokemonType: pokedex.pokemonType,
+  pokemon: pokedex.pokemon
 }), null)(Pokedex);

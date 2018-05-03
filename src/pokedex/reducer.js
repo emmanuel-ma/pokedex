@@ -1,7 +1,8 @@
-import { FETCH_POKEMONS } from './actionTypes';
+import { FETCH_POKEMONS, GET_POKEMON } from './actionTypes';
 
 const initialState = {
-  pokemonType: {}
+  pokemonType: {},
+  pokemon: {}
 }
 
 export default function pokedexReducer(state = initialState, action) {
@@ -12,6 +13,15 @@ export default function pokedexReducer(state = initialState, action) {
       return {
         ...state,
         pokemonType: action.payload
+      };
+    }
+
+    case GET_POKEMON.success(): {
+      console.log(action.payload);
+
+      return {
+        ...state,
+        pokemon: action.payload
       };
     }
 
