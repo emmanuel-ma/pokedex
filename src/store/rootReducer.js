@@ -1,7 +1,11 @@
 import { combineReducers } from 'redux';
 
+// Reducers
+import pokedex from '../pokedex/reducer';
+
+
 const rootReducer = combineReducers({
-    dummy: x => x || {}
+    pokedex
 });
 
 export default rootReducer;
