@@ -3,6 +3,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+// Material UI Components
+import {GridList, GridTile} from 'material-ui/GridList';
+import IconButton from 'material-ui/IconButton';
+import Subheader from 'material-ui/Subheader';
+import StarBorder from 'material-ui/svg-icons/action/info-outline';
+import RaisedButton from 'material-ui/RaisedButton';
+
+// Components
+import DialogPokemon from './components/DialogPokemon';
+
 // Actions
 import { fetchPokemons, getPokemon } from './actions';
 
@@ -10,6 +20,22 @@ import { fetchPokemons, getPokemon } from './actions';
 //import { isFirstRender } from '../shared/utils/data';
 import { isDefined } from '../shared/utils/is';
 
+// Assets
+const styles = {
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+    overflowY: 'auto',
+  },
+  titleStyle: {
+    color: 'rgb(0, 188, 212)',
+  },
+};
 
 class Pokedex extends Component {
   static propTypes = {
@@ -22,6 +48,8 @@ class Pokedex extends Component {
     this.handleFetchPokemonsClick = this.handleFetchPokemonsClick.bind(this);
     this.handleGetPokemonClick = this.handleGetPokemonClick.bind(this);
   }
+
+
 
   handleFetchPokemonsClick() {
     const { dispatch } = this.props;
@@ -37,43 +65,44 @@ class Pokedex extends Component {
   }
 
   render() {
-    const { pokemonType, pokemon } = this.props;
+    const { pokemonType } = this.props;
 
     return (
       <div className="Pokemon">
-        <button onClick={this.handleFetchPokemonsClick}>
-          Load Pokemons
-        </button>
+        <RaisedButton label="Load Pokemons"
+          onClick={this.handleFetchPokemonsClick}/>
 
-        {isDefined(pokemon) &&
-          <div>
-            <h1>Selected Pokemon Information</h1>
-            <ul>
-              <li><strong>Name</strong>: {pokemon.name}</li>
-              <li><strong>Weight</strong>: {pokemon.weight}</li>
-              <li><strong>Height</strong>: {pokemon.name}</li>
-            </ul>
+        {isDefined(pokemonType) && isDefined(pokemonType.pokemon) &&
+          <div style={styles.root}>
+            <GridList cellHeight={180} style={styles.gridList} cols={3}>
+              <Subheader>Flying Pokemons</Subheader>
+
+              {pokemonType.pokemon.map((pokemon, index) =>
+                <GridTile
+                  key={index}
+                  title={pokemon.pokemon.name}
+                  subtitle={<span>Click on the icon</span>}
+                  titleStyle={styles.titleStyle}
+                  titleBackground="linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+                  actionIcon={
+                    <IconButton onClick={(e) => this.handleGetPokemonClick(e, pokemon.pokemon.url)}>
+                      <StarBorder color="white" />
+                    </IconButton>}
+                >
+                  <strong>{pokemon.pokemon.name}</strong>
+                </GridTile>
+              )}
+            </GridList>
           </div>
         }
 
-        <ul> Pokemons List:
-          {isDefined(pokemonType) && isDefined(pokemonType.pokemon) &&
-            pokemonType.pokemon.map((pokemon, index) =>
-            <li key={index}>
-              <h1>{pokemon.pokemon.name}</h1>
-              <span>{pokemon.pokemon.url}</span>
-              <button onClick={(e) => this.handleGetPokemonClick(e, pokemon.pokemon.url)}>
-                See Info
-              </button>
-            </li>
-          )}
-        </ul>
+        <DialogPokemon/>
+
       </div>
     );
   }
 }
 
 export default connect(({ pokedex }) => ({
-  pokemonType: pokedex.pokemonType,
-  pokemon: pokedex.pokemon
+  pokemonType: pokedex.pokemonType
 }), null)(Pokedex);

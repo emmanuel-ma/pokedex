@@ -8,7 +8,7 @@ const initialState = {
 export default function pokedexReducer(state = initialState, action) {
   switch(action.type) {
     case FETCH_POKEMONS.success(): {
-      console.log(action.payload);
+      //console.log(action.payload);
 
       return {
         ...state,
@@ -17,7 +17,7 @@ export default function pokedexReducer(state = initialState, action) {
     }
 
     case GET_POKEMON.success(): {
-      console.log(action.payload);
+      //console.log(action.payload);
 
       return {
         ...state,
